@@ -1,0 +1,110 @@
+env:
+  browser: true
+  es2021: true
+
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+  # - plugin:react/recommended
+  - plugin:react-hooks/recommended
+
+parser: '@typescript-eslint/parser'
+
+plugins:
+  - '@typescript-eslint'
+  - react
+  - react-hooks
+
+rules:
+  no-console: error
+  no-alert: error
+  no-debugger: error
+  indent:
+    - error
+    - 2
+
+overrides:
+  -
+    files:
+      - "**/*.ts?(x)"
+    rules:
+    #   additional-typescript-only-rule
+      eqeqeq:
+        - error
+        - always
+      comma-dangle:
+        - error
+        - always-multiline
+      comma-spacing:
+        - error
+        - 
+          after: true
+      quotes:
+        - error
+        - single
+        - 
+          avoidEscape: true
+      semi:
+        - error
+        - never
+      semi-spacing:
+        - error
+        - 
+          before: false
+          after: true
+      no-trailing-spaces:
+        - error
+        - ignoreComments: true
+      no-useless-rename:
+        - error
+      key-spacing:
+        - error
+        - align:
+            beforeColon: false
+            afterColon: true
+            on: value
+      keyword-spacing:
+        - error
+      arrow-spacing:
+        - error
+        - 
+          before: true
+          after: true
+      space-infix-ops:
+        - error
+      quote-props:
+        - error
+        - as-needed
+      jsx-quotes:
+        - error
+        - prefer-single
+      react/jsx-child-element-spacing:
+        - error
+      react/jsx-props-no-multi-spaces:
+        - error
+      react/jsx-closing-bracket-location:
+        - error
+      react/jsx-curly-spacing:
+        - error
+        - 
+          when: always
+          children: true
+      array-bracket-spacing:
+        - error
+        - always
+      object-curly-spacing:
+        - error
+        - always
+      no-unused-vars: off
+      no-redeclare: off
+      no-undef: off
+      "@typescript-eslint/no-explicit-any": error
+      "@typescript-eslint/no-unused-vars":
+        # https://cn.eslint.org/docs/rules/no-unused-vars
+        - error
+        - 
+          vars: all
+          args: after-used
+          argsIgnorePattern: "^_"
+      "@typescript-eslint/no-redeclare": error
+      "@typescript-eslint/no-empty-interface": off

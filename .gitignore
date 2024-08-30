@@ -1,0 +1,12 @@
+## Production Output
+
+dist/
+
+## Node
+
+node_modules/
+
+## Base algorithms
+
+algorithms/
+*storybook.log
