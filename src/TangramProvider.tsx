@@ -3,6 +3,7 @@ import { TangramContext, TangramEntry, TangramInstance, TangramMode } from './Ta
 
 export interface TangramProviderProps {
   minColumnWidthPercentage: TangramInstance['minColumnWidthPercentage']
+  minRowHeightPercentage: TangramInstance['minRowHeightPercentage']
   entry: TangramEntry
   children?: React.ReactNode
 }
@@ -10,6 +11,7 @@ export interface TangramProviderProps {
 export const TangramProvider: FC<TangramProviderProps> = ({
   entry,
   minColumnWidthPercentage,
+  minRowHeightPercentage,
   children,
 }) => {
   const [ mode, setMode ] = useState(TangramMode.readonly)
@@ -18,10 +20,11 @@ export const TangramProvider: FC<TangramProviderProps> = ({
   const instance = useMemo<TangramInstance>(() => ({
     mode,
     minColumnWidthPercentage,
+    minRowHeightPercentage,
     entry: entryCache,
     edit:  () => setMode(TangramMode.editable),
     read:  () => setMode(TangramMode.readonly),
-  }), [ entryCache, minColumnWidthPercentage, mode ])
+  }), [ entryCache, minColumnWidthPercentage, minRowHeightPercentage, mode ])
 
   return (
     <TangramContext.Provider value={ instance }>
