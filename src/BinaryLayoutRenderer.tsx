@@ -60,8 +60,11 @@ const HorizontalLayoutRenderer: FC<HorizontalLayoutRendererProps> = ({ proportio
   return (
     <div ref={ horizontalRef } className='horizontal flex flex-row flex-nowrap w-full h-full'>
       <div className='min-w-0' style={ { flex: `${proportion[0]} ${proportion[0]} auto` } }>{ children[0] }</div>
-      <div className={ classnames('tg-handle basis-1.5 bg-slate-500', {
+      <div className={ classnames('tg-handle bg-slate-500', {
+        'hover:bg-blue-500': mode === TangramMode.editable,
         'cursor-col-resize': mode === TangramMode.editable,
+        'basis-1':           mode === TangramMode.editable,
+        'basis-px':          mode === TangramMode.readonly,
       }) }
       />
       <div className='min-w-0' style={ { flex: `${proportion[1]} ${proportion[1]} auto` } }>{ children[1] }</div>
@@ -80,8 +83,11 @@ const VerticalLayoutRenderer: FC<VerticalLayoutRendererProps> = ({ proportion, c
   return (
     <div className='vertical flex flex-col flex-nowrap w-full h-full'>
       <div className='min-h-0' style={ { flex: `${proportion[0]} ${proportion[0]} auto` } }>{ children[0] }</div>
-      <div className={ classnames('tg-handle basis-1.5 bg-slate-500', {
+      <div className={ classnames('tg-handle bg-slate-500', {
+        'hover:bg-blue-500': mode === TangramMode.editable,
         'cursor-row-resize': mode === TangramMode.editable,
+        'basis-1':           mode === TangramMode.editable,
+        'basis-px':          mode === TangramMode.readonly,
       }) }
       />
       <div className='min-h-0' style={ { flex: `${proportion[1]} ${proportion[1]} auto` } }>{ children[1] }</div>
