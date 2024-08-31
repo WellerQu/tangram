@@ -2,16 +2,16 @@ import { FC, useMemo, useRef, useState } from 'react'
 import { TangramContext, TangramEntry, TangramInstance, TangramMode } from './TangramContext'
 
 export interface TangramProviderProps {
-  minColumnWidthPercentage: TangramInstance['minColumnWidthPercentage']
-  minRowHeightPercentage: TangramInstance['minRowHeightPercentage']
+  minColumnWidthPercentage?: TangramInstance['minColumnWidthPercentage']
+  minRowHeightPercentage?: TangramInstance['minRowHeightPercentage']
   entry: TangramEntry
   children?: React.ReactNode
 }
 
 export const TangramProvider: FC<TangramProviderProps> = ({
   entry,
-  minColumnWidthPercentage,
-  minRowHeightPercentage,
+  minColumnWidthPercentage = 0.1,
+  minRowHeightPercentage = 0.1,
   children,
 }) => {
   const [ mode, setMode ] = useState(TangramMode.readonly)

@@ -1,65 +1,131 @@
 import { FC, useCallback, useContext } from 'react'
 
-import { Direction, LayoutNode, Node, NodeType } from './node'
+import { Direction, LayoutNode, Node, NodeType, shrink } from './node'
 import { TangramContext, TangramMode } from './TangramContext'
 import { DisabledPointerEvents } from './DisabledPointerEvents'
 import { HorizontalLayoutRenderer } from './HorizontalLayoutRenderer'
 import { VerticalLayoutRenderer } from './VerticalLayoutRenderer'
 import { FullLayoutRenderer } from './FullLayoutRenderer'
+import { DragAndDropEvents, DropPosition } from './DragAndDropEvents'
 
 export interface BinaryLayoutRendererProps {
-  root: Node | undefined
-  onRootChange?: (root: Node | undefined) => void
+  isRoot: boolean
+  current: Node | null | undefined
+  onRootChange?: (root: Node | null) => void
 }
 
 export const BinaryLayoutRenderer: FC<BinaryLayoutRendererProps> = ({
-  root,
+  isRoot = false,
+  current,
   onRootChange,
 }) => {
-  const { entry, mode, minColumnWidthPercentage = 0.1, minRowHeightPercentage = 0.1 } = useContext(TangramContext)
+  const { entry, mode, minColumnWidthPercentage, minRowHeightPercentage } = useContext(TangramContext)
 
   const handleProportionChange = useCallback((proportion: LayoutNode['proportion']) => {
-    if (root?.type === NodeType.layout) {
+    if (current?.type === NodeType.layout) {
       onRootChange?.({
-        ...root,
+        ...current,
         proportion,
       })
     }
-  }, [ onRootChange, root ])
+  }, [ onRootChange, current ])
 
-  if (root && root.type === NodeType.content) {
-    const Component = entry[root.registry]
+  const handleDropped = useCallback((entry: string, position: DropPosition) => {
+    if (current?.type === NodeType.content) {
+      const newNode: Node = {
+        type:       NodeType.layout,
+        proportion: [ 1, 1 ],
+        direction:  position === DropPosition.left || position === DropPosition.right
+          ? Direction.horizontal
+          : Direction.vertical,
+        children: position === DropPosition.left || position === DropPosition.top
+          ? [ { type: NodeType.content, entry }, current ]
+          : [ current, { type: NodeType.content, entry } ],
+      }
+
+      onRootChange?.(isRoot ? shrink(newNode) : newNode)
+    }
+  }, [ current, isRoot, onRootChange ])
+
+  const handlePickedOut = useCallback(() => {
+    if (current?.type === NodeType.content) {
+      onRootChange?.(null)
+    }
+  }, [ current, onRootChange ])
+
+  const handleChild0Change = useCallback((child0: Node | null) => {
+    if (current?.type === NodeType.layout) {
+      const newNode: Node = {
+        ...current,
+        children: [ child0, current.children?.[1] ?? null ],
+      }
+
+      onRootChange?.(isRoot ? shrink(newNode) : newNode)
+    }
+  }, [ current, onRootChange, isRoot ])
+
+  const handleChild1Change = useCallback((child1: Node | null) => {
+    if (current?.type === NodeType.layout) {
+      const newNode: Node = {
+        ...current,
+        children: [ current.children?.[0] ?? null, child1 ],
+      }
+
+      onRootChange?.(isRoot ? shrink(newNode) : newNode)
+    }
+  }, [ current, onRootChange, isRoot ])
+
+  if (current && current.type === NodeType.content) {
+    const Component = entry[current.entry]
     return Component && (
       <FullLayoutRenderer>
-        <DisabledPointerEvents active={ mode === TangramMode.editable }>
-          <Component />
-        </DisabledPointerEvents>
+        <DragAndDropEvents active={ mode === TangramMode.editable }
+          bindEntry={ current.entry }
+          onDropped={ handleDropped }
+          onPickedOut={ handlePickedOut }
+        >
+          <DisabledPointerEvents active={ mode === TangramMode.editable }>
+            <Component />
+          </DisabledPointerEvents>
+        </DragAndDropEvents>
       </FullLayoutRenderer>
     )
   }
 
-  if (root && root.direction === Direction.horizontal) {
+  if (current && current.direction === Direction.horizontal) {
     return (
       <HorizontalLayoutRenderer
-        proportion={ root.proportion }
+        proportion={ current.proportion }
         minColumnWidthPercentage={ minColumnWidthPercentage }
         onProportionChange={ handleProportionChange }
       >
-        <BinaryLayoutRenderer root={ root.children?.[0] } />
-        <BinaryLayoutRenderer root={ root.children?.[1] } />
+        <BinaryLayoutRenderer current={ current.children?.[0] }
+          isRoot={ false }
+          onRootChange={ handleChild0Change }
+        />
+        <BinaryLayoutRenderer current={ current.children?.[1] }
+          isRoot={ false }
+          onRootChange={ handleChild1Change }
+        />
       </HorizontalLayoutRenderer>
     )
   }
 
-  if (root && root.direction === Direction.vertical) {
+  if (current && current.direction === Direction.vertical) {
     return (
       <VerticalLayoutRenderer
-        proportion={ root.proportion }
+        proportion={ current.proportion }
         minRowHeightPercentage={ minRowHeightPercentage }
         onProportionChange={ handleProportionChange }
       >
-        <BinaryLayoutRenderer root={ root.children?.[0] } />
-        <BinaryLayoutRenderer root={ root.children?.[1] } />
+        <BinaryLayoutRenderer current={ current.children?.[0] }
+          isRoot={ false }
+          onRootChange={ handleChild0Change }
+        />
+        <BinaryLayoutRenderer current={ current.children?.[1] }
+          isRoot={ false }
+          onRootChange={ handleChild1Change }
+        />
       </VerticalLayoutRenderer>
     )
   }

@@ -14,11 +14,11 @@ export interface TangramState {
   entry: TangramEntry
 
   /**
-   * The minimum width of a column in percentage.
+   * The minimum width of a column in percentage. The value in (0,1]
    */
   readonly minColumnWidthPercentage: number
   /**
-   * The minimum height of a row in percentage.
+   * The minimum height of a row in percentage. The value in (0,1]
    */
   readonly minRowHeightPercentage: number
 }

@@ -13,7 +13,7 @@ export const FullLayoutRenderer: FC<FullLayoutRendererProps> = ({ children }) =>
 
   return (
     <div className={ classnames('single-full w-full h-full overflow-auto', {
-      'cursor-grab ': mode === TangramMode.editable,
+      'cursor-move': mode === TangramMode.editable,
     }) }
     >{ children }</div>
   )
