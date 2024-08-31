@@ -12,6 +12,11 @@ export enum TangramMode {
 export interface TangramState {
   mode: TangramMode
   entry: TangramEntry
+
+  /**
+   * The minimum width of a column in percentage.
+   */
+  readonly minColumnWidthPercentage: number
 }
 
 export interface TangramAction {
