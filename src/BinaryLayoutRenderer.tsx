@@ -1,5 +1,7 @@
 import { FC, ReactNode, useContext } from 'react'
-import { TangramContext } from './TangramContext'
+import classnames from 'classnames'
+
+import { TangramContext, TangramMode } from './TangramContext'
 import { Direction, LayoutNode, Node, NodeType } from './node'
 
 export interface BinaryLayoutRendererProps {
@@ -49,10 +51,15 @@ interface HorizontalLayoutRendererProps {
 }
 
 const HorizontalLayoutRenderer: FC<HorizontalLayoutRendererProps> = ({ proportion, children }) => {
+  const { mode } = useContext(TangramContext)
+
   return (
     <div className='horizontal flex flex-row flex-nowrap w-full h-full'>
       <div className='min-w-0' style={ { flex: `${proportion[0]} ${proportion[0]} auto` } }>{ children[0] }</div>
-      <div className='tg-handle cursor-col-resize basis-1.5 bg-slate-500'></div>
+      <div className={ classnames('tg-handle basis-1.5 bg-slate-500', {
+        'cursor-col-resize': mode === TangramMode.editable,
+      }) }
+      />
       <div className='min-w-0' style={ { flex: `${proportion[1]} ${proportion[1]} auto` } }>{ children[1] }</div>
     </div>
   )
@@ -64,10 +71,15 @@ interface VerticalLayoutRendererProps {
 }
 
 const VerticalLayoutRenderer: FC<VerticalLayoutRendererProps> = ({ proportion, children }) => {
+  const { mode } = useContext(TangramContext)
+
   return (
     <div className='vertical flex flex-col flex-nowrap w-full h-full'>
       <div className='min-h-0' style={ { flex: `${proportion[0]} ${proportion[0]} auto` } }>{ children[0] }</div>
-      <div className='tg-handle cursor-row-resize basis-1.5 bg-slate-500'></div>
+      <div className={ classnames('tg-handle basis-1.5 bg-slate-500', {
+        'cursor-row-resize': mode === TangramMode.editable,
+      }) }
+      />
       <div className='min-h-0' style={ { flex: `${proportion[1]} ${proportion[1]} auto` } }>{ children[1] }</div>
     </div>
   )
@@ -78,7 +90,12 @@ interface FullLayoutRendererProps {
 }
 
 export const FullLayoutRenderer: FC<FullLayoutRendererProps> = ({ children }) => {
+  const { mode } = useContext(TangramContext)
+
   return (
-    <div className='single-full cursor-grab w-full h-full'>{ children }</div>
+    <div className={ classnames('single-full w-full h-full', {
+      'cursor-grab ': mode === TangramMode.editable,
+    }) }
+    >{ children }</div>
   )
 }
