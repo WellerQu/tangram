@@ -9,12 +9,21 @@ const dependencies = Object.keys(pkg.dependencies)
 /** @type {import('rollup').RollupOptions} */
 export default {
   input: 'src/index.ts',
-  output: {
-    dir: 'dist',
-    format: 'cjs',
-    assetFileNames: '[name][extname]',
-    sourcemap: true,
-  },
+  output: [
+    {
+      dir: 'dist/cjs',
+      format: 'cjs',
+      assetFileNames: '[name][extname]',
+      sourcemap: true,
+      plugins: []
+    },
+    {
+      dir: 'dist/esm',
+      format: 'esm',
+      assetFileNames: '[name][extname]',
+      sourcemap: true,
+    }
+  ],
   plugins: [
     nodeResolve({ resolveOnly: dependencies }),
     commonjs(),
