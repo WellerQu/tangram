@@ -3,7 +3,7 @@ import { TangramContext, TangramEntry, TangramInstance, TangramMode } from './Ta
 
 export interface TangramProviderProps {
   entry: TangramEntry
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export const TangramProvider: FC<TangramProviderProps> = ({ entry,  children }) => {

@@ -1,21 +1,24 @@
-import { FC, ReactNode, useContext } from 'react'
+import { FC, ReactNode, useContext, useRef } from 'react'
 import classnames from 'classnames'
 
 import { TangramContext, TangramMode } from './TangramContext'
 import { Direction, LayoutNode, Node, NodeType } from './node'
+import { DisabledPointerEvents } from './DisabledPointerEvents'
 
 export interface BinaryLayoutRendererProps {
   root: Node | undefined
 }
 
 export const BinaryLayoutRenderer: FC<BinaryLayoutRendererProps> = ({ root }) => {
-  const { entry } = useContext(TangramContext)
+  const { entry, mode } = useContext(TangramContext)
 
   if (root && root.type === NodeType.content) {
     const Component = entry[root.registry]
     return Component && (
       <FullLayoutRenderer>
-        <Component />
+        <DisabledPointerEvents active={ mode === TangramMode.editable }>
+          <Component />
+        </DisabledPointerEvents>
       </FullLayoutRenderer>
     )
   }
@@ -52,9 +55,10 @@ interface HorizontalLayoutRendererProps {
 
 const HorizontalLayoutRenderer: FC<HorizontalLayoutRendererProps> = ({ proportion, children }) => {
   const { mode } = useContext(TangramContext)
+  const horizontalRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className='horizontal flex flex-row flex-nowrap w-full h-full'>
+    <div ref={ horizontalRef } className='horizontal flex flex-row flex-nowrap w-full h-full'>
       <div className='min-w-0' style={ { flex: `${proportion[0]} ${proportion[0]} auto` } }>{ children[0] }</div>
       <div className={ classnames('tg-handle basis-1.5 bg-slate-500', {
         'cursor-col-resize': mode === TangramMode.editable,
