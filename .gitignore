@@ -6,6 +6,9 @@ dist/
 
 node_modules/
 
+## Mac OS
+.DS_Store
+
 ## Base algorithms
 
 algorithms/
