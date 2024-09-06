@@ -5,12 +5,16 @@
   "type": "module",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tailwindcss -c ./tailwind.config.js --postcss ./postcss.config.js -o ./dist/tangram.css && rollup -c ./rollup.config.js",
+    "build-css": "tailwindcss -c ./tailwind.config.js --postcss ./postcss.config.js -o ./dist/tangram.css",
+    "build-js": "rollup -c ./rollup.config.js",
+    "build-types": "tsc --emitDeclarationOnly --declaration --declarationMap --declarationDir dist/types",
+    "build": "pnpm run build-css && pnpm run build-js && pnpm run build-types",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

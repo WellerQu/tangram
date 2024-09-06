@@ -15,7 +15,6 @@ export default {
       format: 'cjs',
       assetFileNames: '[name][extname]',
       sourcemap: true,
-      plugins: []
     },
     {
       dir: 'dist/esm',
